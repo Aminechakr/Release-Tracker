@@ -81,7 +81,7 @@ async function notifySlack(message) {
 console.log(`[${getCurrentDateTime()}] Service is up and running.`);
 console.log(`[${getCurrentDateTime()}] Version: ${packageJson.version}`);
 
-// Schedule the checkReleasesAndNotify function to run every minute.
-cron.schedule('* * * * *', () => {
+// Schedule the checkReleasesAndNotify function to run every day at midnight.
+cron.schedule('0 0 0 * * *', () => {
   checkReleasesAndNotify();
 });
