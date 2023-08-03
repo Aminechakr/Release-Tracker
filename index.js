@@ -1,11 +1,11 @@
 const axios = require('axios');
 const cron = require('node-cron');
-const dotenv = require('dotenv');
+//const dotenv = require('dotenv');
 
-dotenv.config();
-
+//dotenv.config();
+// Get the GitHub access token and Slack webhook URL from the system environment variables
 const accessToken = process.env.GITHUB_ACCESS_TOKEN;
-const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
+const slackWebhookUrl = `https://${process.env.SLACK_WEBHOOK_URL}`;
 
 // List of GitHub repositories to check.
 const repositoriesToCheck = [
@@ -80,4 +80,3 @@ cron.schedule('* * * * *', () => {
   console.log(`[${getCurrentDateTime()}] Checking for new releases...`);
   checkReleasesAndNotify();
 });
-
