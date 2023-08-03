@@ -5,7 +5,7 @@ const cron = require('node-cron');
 //dotenv.config();
 // Get the GitHub access token and Slack webhook URL from the system environment variables
 const accessToken = process.env.GITHUB_ACCESS_TOKEN;
-const slackWebhookUrl = `https://${process.env.SLACK_WEBHOOK_URL}`;
+const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
 
 // List of GitHub repositories to check.
 const repositoriesToCheck = [
