@@ -9,7 +9,9 @@ const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
 
 // List of GitHub repositories to check.
 const repositoriesToCheck = [
-  { owner: 'ChainSafe', repo: 'lodestar' },    
+  { owner: 'ChainSafe', repo: 'lodestar' },
+  { owner: 'ChainSafe', repo: 'forest' },
+  { owner: 'filecoin-project', repo: 'lotus' },   
   { owner: 'ethpandaops', repo: 'checkpointz' },
   { owner: 'ethereum', repo: 'go-ethereum' },
   { owner: 'hyperledger', repo: 'besu' },
@@ -19,6 +21,7 @@ const repositoriesToCheck = [
   { owner: 'grafana', repo: 'loki' },
   { owner: 'flashbots', repo: 'mev-boost' },
   { owner: 'AmineChakr', repo: 'Release-Tracker' },
+
   // Add more repositories as needed.
 ];
 
