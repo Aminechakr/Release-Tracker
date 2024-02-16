@@ -11,7 +11,8 @@ const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
 const repositoriesToCheck = [
   { owner: 'ChainSafe', repo: 'lodestar' },
   { owner: 'ChainSafe', repo: 'forest' },
-  { owner: 'filecoin-project', repo: 'lotus' },   
+  { owner: 'filecoin-project', repo: 'lotus' },
+  { owner: 'paritytech', repo: 'polkadot-sdk' },   
   { owner: 'ethpandaops', repo: 'checkpointz' },
   { owner: 'ethereum', repo: 'go-ethereum' },
   { owner: 'hyperledger', repo: 'besu' },
