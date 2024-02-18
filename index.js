@@ -22,7 +22,7 @@ const repositoriesToCheck = [
   { owner: 'grafana', repo: 'loki' },
   { owner: 'flashbots', repo: 'mev-boost' },
   { owner: 'AmineChakr', repo: 'Release-Tracker' },
-
+  { owner: 'paritytech', repo: 'polkadot-sdk' },
   // Add more repositories as needed.
 ];
 
