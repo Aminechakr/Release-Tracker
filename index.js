@@ -21,6 +21,7 @@ const repositoriesToCheck = [
   { owner: 'grafana', repo: 'grafana' },
   { owner: 'grafana', repo: 'loki' },
   { owner: 'flashbots', repo: 'mev-boost' },
+  { owner: 'sygmaprotocol', repo: 'sygma-relayer' },
   { owner: 'AmineChakr', repo: 'Release-Tracker' },
 
   // Add more repositories as needed.
