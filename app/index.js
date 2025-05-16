@@ -1,14 +1,15 @@
 const axios = require('axios');
 const cron = require('node-cron');
 const packageJson = require('./package.json');
-
 const fs = require('fs');
 const stateFile = './release-state.json';
 
 require('dotenv').config();
-// Get the GitHub access token and Slack webhook URL from the system environment variables
+
+// Get the GitHub access token, Slack webhook URL and Cron Schedule Frequency from the system environment variables
 const accessToken = process.env.GITHUB_ACCESS_TOKEN;
 const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
+const cronSchedule = process.env.CRON_SCHEDULE;
 
 let latestReleases = {};
 try {
@@ -17,18 +18,13 @@ try {
   latestReleases = {};
 }
 
-// List of GitHub repositories to check.
+// Load (from .env) vars and Parse the list of GitHub repositories to check.
 const repositoriesToCheck = process.env.REPOSITORIES
   .split(',')
   .map(entry => {
     const [owner, repo] = entry.split('/');
     return { owner, repo };
   });
-
-  // Add more repositories as needed.
-
-// Object to store the latest release information for each repository.
-// const latestReleases = {};
 
 function getCurrentDateTime() {
   const now = new Date();
@@ -38,6 +34,7 @@ function getCurrentDateTime() {
 async function checkReleasesAndNotify() {
   try {
     console.log(`[${getCurrentDateTime()}] Checking for new releases...`);
+    // Loop over Repositories and check releases
     for (const { owner, repo } of repositoriesToCheck) {
       const releasesUrl = `https://api.github.com/repos/${owner}/${repo}/releases`;
       const response = await axios.get(releasesUrl, {
@@ -54,14 +51,14 @@ async function checkReleasesAndNotify() {
         if (!latestReleases[`${owner}/${repo}`] || latestReleases[`${owner}/${repo}`] !== latestRelease.tag_name) {
           console.log(`[${getCurrentDateTime()}] New version of ${owner}/${repo} released: ${latestRelease.tag_name}`);
 
-          // Notify on Slack about the new release.
+          // Send Slack notification(s).
           const message = `🏆 New version of ${repo} released: ${latestRelease.tag_name} 🎉`;
           await notifySlack(message);
 
           // Update the latest release information in memory.
           latestReleases[`${owner}/${repo}`] = latestRelease.tag_name;
 
-          // Save the updated state
+          // Save the latest releases to JSON stateFile.
           fs.writeFileSync(stateFile, JSON.stringify(latestReleases, null, 2));
 
         } else {
@@ -77,6 +74,7 @@ async function checkReleasesAndNotify() {
   }
 }
 
+// Slack notification send.
 async function notifySlack(message) {
   try {
     await axios.post(slackWebhookUrl, { text: message });
@@ -91,6 +89,6 @@ console.log(`[${getCurrentDateTime()}] Service is up and running.`);
 console.log(`[${getCurrentDateTime()}] Version: ${packageJson.version}`);
 
 // Schedule the checkReleasesAndNotify function to run every day at midnight.
-cron.schedule('1 * * * * *', () => {
+cron.schedule(cronSchedule, () => {
   checkReleasesAndNotify();
 });

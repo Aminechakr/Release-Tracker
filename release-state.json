@@ -1,8 +1,0 @@
-{
-  "Talbitalbi/test": "v1.0.test",
-  "prometheus/prometheus": "v3.4.0-rc.0",
-  "grafana/grafana": "v12.0.0",
-  "grafana/loki": "v3.5.0",
-  "anoma/namada": "v101.0.0",
-  "firedancer-io/firedancer": "v0.503.20214"
-}
