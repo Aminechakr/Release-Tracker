@@ -2,33 +2,33 @@ const axios = require('axios');
 const cron = require('node-cron');
 const packageJson = require('./package.json');
 
-//dotenv.config();
+const fs = require('fs');
+const stateFile = './release-state.json';
+
+require('dotenv').config();
 // Get the GitHub access token and Slack webhook URL from the system environment variables
 const accessToken = process.env.GITHUB_ACCESS_TOKEN;
 const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
 
+let latestReleases = {};
+try {
+  latestReleases = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
+} catch {
+  latestReleases = {};
+}
+
 // List of GitHub repositories to check.
-const repositoriesToCheck = [
-  { owner: 'ChainSafe', repo: 'lodestar' },
-  { owner: 'ChainSafe', repo: 'forest' },
-  { owner: 'filecoin-project', repo: 'lotus' },
-  { owner: 'paritytech', repo: 'polkadot-sdk' },   
-  { owner: 'ethpandaops', repo: 'checkpointz' },
-  { owner: 'ethereum', repo: 'go-ethereum' },
-  { owner: 'hyperledger', repo: 'besu' },
-  { owner: 'NethermindEth', repo: 'nethermind' },
-  { owner: 'prometheus', repo: 'prometheus' },
-  { owner: 'grafana', repo: 'grafana' },
-  { owner: 'grafana', repo: 'loki' },
-  { owner: 'flashbots', repo: 'mev-boost' },
-  { owner: 'sygmaprotocol', repo: 'sygma-relayer' },
-  { owner: 'AmineChakr', repo: 'Release-Tracker' },
+const repositoriesToCheck = process.env.REPOSITORIES
+  .split(',')
+  .map(entry => {
+    const [owner, repo] = entry.split('/');
+    return { owner, repo };
+  });
 
   // Add more repositories as needed.
-];
 
 // Object to store the latest release information for each repository.
-const latestReleases = {};
+// const latestReleases = {};
 
 function getCurrentDateTime() {
   const now = new Date();
@@ -60,6 +60,10 @@ async function checkReleasesAndNotify() {
 
           // Update the latest release information in memory.
           latestReleases[`${owner}/${repo}`] = latestRelease.tag_name;
+
+          // Save the updated state
+          fs.writeFileSync(stateFile, JSON.stringify(latestReleases, null, 2));
+
         } else {
           console.log(`[${getCurrentDateTime()}] No new releases found for the repository ${owner}/${repo}.`);
         }
@@ -87,6 +91,6 @@ console.log(`[${getCurrentDateTime()}] Service is up and running.`);
 console.log(`[${getCurrentDateTime()}] Version: ${packageJson.version}`);
 
 // Schedule the checkReleasesAndNotify function to run every day at midnight.
-cron.schedule('0 0 0 * * *', () => {
+cron.schedule('1 * * * * *', () => {
   checkReleasesAndNotify();
 });
